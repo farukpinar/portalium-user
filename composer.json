@@ -3,7 +3,7 @@
 	"description" : "Portalium User Module",
 	"type" : "portalium-core",
 	"license": "MIT",
-	"homepage" : "https://portalium.dev",
+	"homepage" : "https://github.com/farukpinar/portalium-user",
 	"authors" : [
 		{
 			"name" : "Uğur YILDIZ",
