@@ -55,9 +55,9 @@ class ImportController extends WebController
 
             $users = [];
             $filePath = realpath(Yii::$app->basePath . '/../data') . '/' . $fileName;
-            $GLOBALS['seperator'] = $model->seperator;
+            $GLOBALS['filepath'] = $filePath;
             $csv = array_map(function ($v) { 
-                return str_getcsv($v, $GLOBALS['seperator']); }, file($filePath, FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES));
+                return str_getcsv($v, $this->detectDelimiter($GLOBALS['filepath'])); }, file($filePath, FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES));
             $keys = array_shift($csv);
 
             foreach ($csv as $i => $row) {
@@ -132,6 +132,22 @@ class ImportController extends WebController
         return false;
     }
 
+    function detectDelimiter($csvFile)
+    {
+        $delimiters = [";" => 0, "," => 0, "\t" => 0, "|" => 0];
+
+        $handle = fopen($csvFile, "r");
+        $firstLine = fgets($handle);
+        fclose($handle);
+        foreach ($delimiters as $delimiter => &$count) {
+            $count = count(str_getcsv($firstLine, $delimiter));
+        }
+
+        if (array_sum($delimiters) <= count($delimiters)) {
+            return false;
+        }
+
+        return array_search(max($delimiters), $delimiters);
+    }
 
 }
-
